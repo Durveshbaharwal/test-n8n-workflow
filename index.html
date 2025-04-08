@@ -1,78 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Durvesh's Social Media Auto Poster</title>
-  <script async defer crossorigin="anonymous"
-    src="https://connect.facebook.net/en_US/sdk.js"></script>
-  <script>
-    window.fbAsyncInit = function () {
-      FB.init({
-        appId: '1169285231363200', // Replace with your actual Facebook App ID
-        cookie: true,
-        xfbml: true,
-        version: 'v18.0'
-      });
-
-      FB.AppEvents.logPageView();
-    };
-
-    function loginWithFacebook() {
-      FB.login(function (response) {
-        if (response.authResponse) {
-          alert('Logged in! Access Token: ' + response.authResponse.accessToken);
-          // Optionally redirect to n8n webhook:
-          // window.location.href = 'https://your-n8n-instance.com/webhook/facebook-test?token=' + response.authResponse.accessToken;
-        } else {
-          alert('User cancelled login or did not fully authorize.');
-        }
-      }, {scope: 'pages_show_list,instagram_basic,instagram_content_publish'});
-    }
-  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Social Media Auto-Poster Test</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f5f5f5;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 10px;
     }
-    h1 {
+    h2 {
+      text-align: center;
       color: #333;
     }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
     button {
-      padding: 12px 24px;
-      font-size: 16px;
-      background-color: #1877f2;
-      color: white;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #4CAF50;
       border: none;
+      color: white;
+      font-size: 16px;
       border-radius: 6px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #165ec9;
+      background-color: #45a049;
     }
-    p {
-      color: #666;
-      margin-top: 20px;
-      max-width: 600px;
-      text-align: center;
+    .instructions {
+      background: #fff;
+      padding: 15px;
+      margin-top: 25px;
+      border-left: 4px solid #2196F3;
     }
   </style>
 </head>
 <body>
-  <h1>Test Social Media Auto Posting App</h1>
-  <p>This tool posts your Google Sheets-based content directly to Instagram, Facebook, LinkedIn, and Twitter using n8n automation workflows.</p>
 
-  <button onclick="loginWithFacebook()">Login with Facebook</button>
+  <h2>Social Media Auto-Poster Test (Meta Reviewer)</h2>
 
-  <p style="margin-top: 40px; font-size: 14px;">
-    For testing by Facebook reviewers.<br>
-    Created by Durvesh Sunil Baharwal.
-  </p>
+  <form id="postForm">
+    <label>Title</label>
+    <input type="text" name="title" required />
+
+    <label>Caption</label>
+    <textarea name="caption" rows="3" required></textarea>
+
+    <label>Hashtags (comma-separated)</label>
+    <input type="text" name="hashtags" required />
+
+    <label>Google Drive Direct Link (Image or Video)</label>
+    <input type="url" name="mediaUrl" required />
+
+    <button type="submit">Submit & Trigger Post</button>
+  </form>
+
+  <div class="instructions">
+    <h3>🔧 How It Works:</h3>
+    <ol>
+      <li>On form submission, data is sent to our backend n8n workflow via a secure webhook.</li>
+      <li>We use the saved OAuth 2.0 credentials to post the content on the connected Facebook or Instagram Page.</li>
+      <li>The API permissions used are:
+        <ul>
+          <li><code>pages_show_list</code></li>
+          <li><code>pages_manage_posts</code></li>
+          <li><code>instagram_basic</code></li>
+        </ul>
+      </li>
+      <li>This is a testing version for Meta Review purposes only.</li>
+    </ol>
+  </div>
+
+  <script>
+    document.getElementById('postForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const payload = {
+        title: formData.get('title'),
+        caption: formData.get('caption'),
+        hashtags: formData.get('hashtags'),
+        media_url: formData.get('mediaUrl')
+      };
+
+      const res = await fetch('https://durveshbaharwal.app.n8n.cloud/webhook-test/95ccb3bb-429a-43cb-aeba-ea86061b56c7', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        alert('✅ Post submitted successfully for publishing!');
+      } else {
+        alert('❌ Failed to submit post. Check logs or tokens.');
+      }
+    });
+  </script>
+
 </body>
 </html>
