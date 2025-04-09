@@ -3,115 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Social Media Auto-Poster Test</title>
+  <title>n8n Scheduled Workflow Simulation</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #f5f5f5;
-      border-radius: 10px;
-    }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 15px;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 12px 20px;
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .instructions {
-      background: #fff;
-      padding: 15px;
-      margin-top: 25px;
-      border-left: 4px solid #2196F3;
-    }
+    body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col items-center justify-start p-6">
 
-  <h2>Social Media Auto-Poster Test (Meta Reviewer)</h2>
+  <div class="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-6 mt-10">
+    <h1 class="text-3xl font-bold text-blue-600 mb-4">n8n Scheduled Posting Simulation</h1>
+    <p class="mb-6 text-gray-600">
+      This is a static simulation of how our backend workflow works using <strong>n8n</strong>. The actual workflow is triggered by a <strong>scheduled trigger</strong> and automatically posts content to Facebook or Instagram using a valid access token obtained through OAuth 2.0.
+    </p>
 
-  <form id="postForm">
-    <label>Title</label>
-    <input type="text" name="title" required />
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold mb-2">Simulated Post Data:</h2>
+      <form class="space-y-4">
+        <input type="text" placeholder="Title" class="w-full p-2 border rounded-lg"/>
+        <textarea placeholder="Caption" class="w-full p-2 border rounded-lg"></textarea>
+        <input type="text" placeholder="#Hashtags" class="w-full p-2 border rounded-lg"/>
+        <input type="url" placeholder="Image or Video Link (e.g., Google Drive)" class="w-full p-2 border rounded-lg"/>
+        <button type="button" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+          Submit (Simulated)
+        </button>
+      </form>
+    </div>
 
-    <label>Caption</label>
-    <textarea name="caption" rows="3" required></textarea>
+    <div class="bg-gray-100 p-4 rounded-lg text-sm text-gray-700">
+      <strong>How it works:</strong>
+      <ol class="list-decimal pl-6 mt-2 space-y-1">
+        <li>A scheduled trigger starts the workflow every day at a fixed time (e.g., 10 AM).</li>
+        <li>Data is fetched from a content source (e.g., Airtable, Google Sheets).</li>
+        <li>Access token (obtained via OAuth 2.0) is used to post to Facebook or Instagram.</li>
+        <li>APIs used: <code>pages_show_list</code>, <code>pages_manage_posts</code>, <code>instagram_basic</code>.</li>
+        <li>All posts are automated; no frontend user interaction is required.</li>
+      </ol>
+    </div>
 
-    <label>Hashtags (comma-separated)</label>
-    <input type="text" name="hashtags" required />
-
-    <label>Google Drive Direct Link (Image or Video)</label>
-    <input type="url" name="mediaUrl" required />
-
-    <button type="submit">Submit & Trigger Post</button>
-  </form>
-
-  <div class="instructions">
-    <h3>🔧 How It Works:</h3>
-    <ol>
-      <li>On form submission, data is sent to our backend n8n workflow via a secure webhook.</li>
-      <li>We use the saved OAuth 2.0 credentials to post the content on the connected Facebook or Instagram Page.</li>
-      <li>The API permissions used are:
-        <ul>
-          <li><code>pages_show_list</code></li>
-          <li><code>pages_manage_posts</code></li>
-          <li><code>instagram_basic</code></li>
-        </ul>
-      </li>
-      <li>This is a testing version for Meta Review purposes only.</li>
-    </ol>
+    <p class="mt-6 text-sm text-gray-400 text-center">This simulation is for Meta App Review purposes only.</p>
   </div>
-
-  <script>
-    document.getElementById('postForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const payload = {
-        title: formData.get('title'),
-        caption: formData.get('caption'),
-        hashtags: formData.get('hashtags'),
-        media_url: formData.get('mediaUrl')
-      };
-
-      const res = await fetch('https://durveshbaharwal.app.n8n.cloud/webhook-test/95ccb3bb-429a-43cb-aeba-ea86061b56c7', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (res.ok) {
-        alert('✅ Post submitted successfully for publishing!');
-      } else {
-        alert('❌ Failed to submit post. Check logs or tokens.');
-      }
-    });
-  </script>
 
 </body>
 </html>
