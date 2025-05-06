@@ -19,6 +19,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        persist-credentials: true  # 👈 this enables git push
+
 
     - name: Set up Git
       run: |
